@@ -1,0 +1,40 @@
+(in-package :stonk)
+
+(defparameter *database* nil
+  "doc")
+
+
+;; system specific stuff.                                                                                                                                                  
+                                                                                                                                                                           
+(defparameter *user-agent* "CL-WIKIDATA/0.0 (https://github.com/fade/cl-wikidata.git; fade@deepsky.com) sbcl/2.1.0"                                                        
+  "It is only polite to provide a useful user agent string, where we                                                                                                       
+  aren't working toward a goal of adversarial interoperability.")                                                                                                          
+                                                                                                                                                                           
+;; finnhub API auth -- they're moving more and more stuff into their                                                                                                       
+;; non-free tier, which is expensive, but the free tier should get you                                                                                                     
+;; far enough to know whether you should buy the paid tier.                                                                                                                
+                                                                                                                                                                           
+(defparameter *finnhub-api-endpoint* "https://finnhub.io/api/v1/stock/symbol")                                                                                             
+                                                                                                                                                                           
+(defparameter *finnhub-api-key* "bp0nv9frh5r9fdeib5h0")                                                                                                                    
+                                                                                                                                                                           
+;; finnhub sandbox API auth                                                                                                                                                
+(defparameter *sandbox-api-key* "sandbox_c0e5qnf48v6s9jurvid0")                                                                                                            
+                                                                                                                                                                           
+;; finnhub webhook                                                                                                                                                         
+(defparameter *finnhub-webhook-secret* "c0e5qnf48v6s9jurvidg")                                                                                                             
+
+;; alpaca doesn't work at all for people not resident in the United                                                                                                        
+;; States of America. They let anybody use their paper trading API, though.                                                                                                
+
+(defparameter *alpaca-endpoint* "https://paper-api.alpaca.markets/")                                                                                                       
+
+(defparameter *alpaca-api-key* "JH2ZoZtDULD9VfOLpGdTz7yN2cEwoOsFpjGm00Ns")                                                                                                 
+
+;; Yahoo Finance miraculously remains the most reliable source of                                                                                                          
+;; financial data outside the closed gardens of various online                                                                                                             
+;; brokerages.                                                                                                                                                             
+
+(defvar *base-url* "https://query1.finance.yahoo.com")                                                                                                                     
+
+(defvar *scrape-url* "https://finance.yahoo.com/quote")
