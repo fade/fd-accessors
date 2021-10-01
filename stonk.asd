@@ -29,7 +29,6 @@
                ;; #:CL-YESQL/POSTMODERN
                #:CLOG
                #:PY4CL
-               ;; #:NET.DIDIERVERNA.CLON
                #:DEFMAIN)
   :pathname "./"
   :components ((:file "app-utils")

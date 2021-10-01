@@ -1,12 +1,13 @@
 ;; -*-lisp-*-
+
 (defpackage :stonk
-            (:use :cl)
-            (:use :stonk.app-utils)
-            (:export :-main))
+  (:use :cl)
+  (:use :stonk.app-utils)
+  (:export :-main))
 
 (in-package :stonk)
 
-
+;; Runtime stuff follows.
 
 (defun -main (&optional args)
   (declare (ignorable args))
