@@ -59,6 +59,7 @@ Yahoo Finance API."))
 
 (defmethod write-history ((ticker <ticker>) &key (period "1mo") (interval "1d")
                                               (start nil) (end nil))
+  (declare (ignorable period interval start end))
   nil)
 
 ;;========================================================================
