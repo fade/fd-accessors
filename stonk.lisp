@@ -1,11 +1,11 @@
 ;; -*-lisp-*-
 
-(defpackage :stonk
+(defpackage :fd-accessors
   (:use :cl)
-  (:use :stonk.app-utils)
+  (:use :fd-accessors.app-utils)
   (:export :-main))
 
-(in-package :stonk)
+(in-package :fd-accessors)
 
 ;; Runtime stuff follows.
 

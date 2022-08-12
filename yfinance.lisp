@@ -1,4 +1,4 @@
-(in-package :stonk)
+(in-package :fd-accessors)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; ticker data objects.
@@ -52,6 +52,11 @@ represented by the market ticker symbol."))
 ;;========================================================================
 ;; <ticker-data> methods for object init, and management.
 ;;========================================================================
+
+;; when a <ticker> is initialised, fill it with data.
+
+(defmethod initialize-instance :after  ((ticker <ticker>))
+  )
 
 (defgeneric write-history (ticker &key period interval start end &allow-other-keys)
   (:documentation "retrieve historical data for a given instance of <ticker> from the

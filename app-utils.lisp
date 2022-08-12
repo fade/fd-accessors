@@ -1,11 +1,11 @@
 ;; -*-lisp-*-
 
-(defpackage :stonk.app-utils
+(defpackage :fd-accessors.app-utils
   (:use :cl)
   (:export :internal-disable-debugger)
   (:export :internal-quit))
 
-(in-package :stonk.app-utils)
+(in-package :fd-accessors.app-utils)
   
 (defun internal-disable-debugger ()
   (labels
