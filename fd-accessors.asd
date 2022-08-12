@@ -1,7 +1,7 @@
 ;; -*-lisp-*-
-;;;; stonk.asd
+;;;; fd-accessors.asd
 
-(asdf:defsystem #:stonk
+(asdf:defsystem #:fd-accessors
   :license "GNU Affero General Public License v3 or later, at your discretion."
   :version "0.1.0"
   :author "Brian O'Reilly <fade@deepsky.com>"
@@ -32,7 +32,7 @@
                #:DEFMAIN)
   :pathname "./"
   :components ((:file "app-utils")
-               (:file "stonk")
+               (:file "fd-accessors")
                (:file "config")
                (:file "yfinance")))
 
