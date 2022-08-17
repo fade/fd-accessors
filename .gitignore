@@ -19,3 +19,4 @@ config.lisp
 buildapp
 quicklisp-manifest.txt
 stonk
+/fd-accessors
