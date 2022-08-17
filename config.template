@@ -1,4 +1,4 @@
-(in-package :stonk)
+(in-package :fd-accessors)
 
 (defparameter *database* nil
   "doc")

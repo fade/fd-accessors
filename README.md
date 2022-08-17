@@ -1,2 +1,2 @@
-# stonk
+# fd-accessors
 financial data accessors

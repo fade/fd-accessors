@@ -1,7 +1,7 @@
 ROOT_DIR:=$(shell dirname $(realpath $(lastword $(MAKEFILE_LIST))))
-PACKAGE=stonk
-PACKAGEUTILS=stonk.app-utils
-OUT=stonk
+PACKAGE=fd-accessors
+PACKAGEUTILS=fd-accessors.app-utils
+OUT=fd-accessors
 ENTRY=-main
 
 $(OUT): buildapp *.lisp quicklisp-manifest.txt
