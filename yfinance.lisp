@@ -55,8 +55,8 @@ represented by the market ticker symbol."))
 
 ;; when a <ticker> is initialised, fill it with data.
 
-(defmethod initialize-instance :after ((ticker <ticker>) &rest initargs)
-  (call-next-method))
+;; (defmethod initialize-instance :after ((ticker <ticker>) &rest initargs)
+;;   (call-next-method))
 
 (defgeneric write-history (ticker &key period interval start end &allow-other-keys)
   (:documentation "retrieve historical data for a given instance of <ticker> from the
