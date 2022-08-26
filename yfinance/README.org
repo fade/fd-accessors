@@ -1,0 +1,12 @@
+* yfinance
+
+** © Brian O'Reilly <fade@deepsky.com> 2022
+
+this is a module extending the fd-accessors package which enables
+access to the unofficial yahoo finanance API.
+
+** License
+
+This code is licensed under the terms of the [GNU Affero General Public License](https://www.gnu.org/licenses/agpl-3.0.en.html "GNU Affero General Public License")
+
+
