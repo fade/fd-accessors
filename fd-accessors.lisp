@@ -1,10 +1,5 @@
 ;; -*-lisp-*-
 
-(defpackage :fd-accessors
-  (:use :cl)
-  (:use :fd-accessors.app-utils)
-  (:export :-main))
-
 (in-package :fd-accessors)
 
 ;; Runtime stuff follows.
