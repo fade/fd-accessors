@@ -1,11 +1,17 @@
 ;;;; yfinance.asd
 
 (asdf:defsystem #:yfinance
-  :description "Describe yfinance here"
-  :author "Your Name <your.name@example.com>"
-  :license  "Specify license here"
+  :description "Implement the data accessors for Yahoo Finance data API."
+  :author "Brian O'Reilly <fade@deepsky.com>"
+  :license  "GNU AFFERO General Public License."
   :version "0.0.1"
   :serial t
-  :depends-on (#:fd-accessors #:quri #:dexador #:cl-strings #:rutils #:alexandria)
+  :depends-on (#:quri
+               #:dexador
+               #:cl-strings
+               #:cl-ppcre
+               #:rutils
+               #:alexandria)
+  
   :components ((:file "package")
                (:file "yfinance")))
