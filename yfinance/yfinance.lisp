@@ -23,37 +23,51 @@
   ((scrape-url :initarg :scrape-url
                :accessor scrape-url
                :initform (quri:uri "https://finance.yahoo.com/quote/"))
+   (api-url :initarg :api-url
+            :accessor api-url
+            :initform "")
    (query-url :initarg :query-url
-              :accessor :query-url
-              :initform (quri:uri "https://query1.finance.yahoo.com/v11/finance/quoteSummary/{~A}?modules={~A}")))
+              :accessor query-url
+              :initform (quri:uri "https://query1.finance.yahoo.com/v11/finance/quoteSummary/~A?modules=~{~A~^,~}")))
   (:documentation "This object represents the REST base-url with which
   our local protocol will interact."))
 
 (defparameter *api* (make-instance '<yahoo-finance-api>))
 
 (defclass <ticker-base> ()
-  ((history :initarg :history :accessor history :initform nil)
-   (pricing-currency :initarg :pricing-currency :accessor pricing-currency :initform nil)
-   (fundamentals :initarg :fundimentals :accessor fundimentals :initform nil)
-   (info :initarg :info :accessor info :initform nil)
-   (sustainability :initarg :sustainability :accessor sustainability :initform nil)
-   (recommendations :initarg :recommendations :accessor recommendations :initform nil)
-   (major-holders :initarg :major-holders :accessor major-holders :initform nil)
-   (institutional-holders :initarg :institutional-holders :accessor institutional-holders :initform nil)
-   (mutualfund-holders :initarg :mutualfund-holders :accessor mutualfund-holders :initform nil)
-   (isin :initarg :isin :accessor isin :initform nil)
-   (calendar :initarg :calendar :accessor calendar :initform nil)
-   (expirations :initarg :expirations :accessor expirations :initform nil)
-   ;; dataframes
-   (earnings :initarg :earnings :accessor earnings :initform nil) ;; (vellum:make-table)
-   (financials :initarg :financials :accessor financial :initform nil) ;; (vellum:make-table)
-   (balancesheet :initarg :balancesheet :accessor balancesheet :initform nil) ;; (vellum:make-table)
-   (cashflow :initarg :cashflow :accessor cashflow :initform nil)) ;; (vellum:make-table)
+  ((pricing-currency :initarg :pricing-currency :initform nil :initarg :pcof)
+   (exchange-name :initarg :exchange-name :initform nil :accessor exchange-name)
+   (instrument-type :initarg :instrument-type :initform nil :accessor instrument-type)
+   (first-trade-date :initarg :first-trade-date :initform nil :accessor first-trade-date)
+   (regular-market-time :initarg :regular-market-time :initform nil :accessor regular-market-time)
+   (gmtoffset :initarg :gmtoffset :initform nil :accessor gmtoffset)
+   (timezone :initarg :timezone :initform nil :accessor timezone)
+   (exchange-timezone-name :initarg :exchange-timezone-name :initform nil :accessor exchange-timezone-name)
+   (regular-market-price :initarg :regular-market-price :initform nil :accessor regular-market-price)
+   (chart-previous-close :initarg :chart-previous-close :initform nil :accessor chart-previous-close)
+   (previous-close :initarg :previous-close :initform nil :accessor previous-close)
+   (scale :initarg :scale :initform nil :accessor scale)
+   (price-hint :initarg :price-hint :initform nil :accessor price-hint)
+   (current-trading-period :initarg :current-trading-period :initform nil :accessor current-trading-period)
+   (trading-periods :initarg :trading-periods :initform nil :accessor trading-periods)
+   (data-granularity :initarg :data-granularity :initform nil :accessor data-granularity)
+   (range :initarg :range :initform nil :accessor range)
+   (valid-ranges :initarg :valid-ranges :initform nil :accessor valid-ranges)
+   (timestamps :initarg :timestamps :initform nil :accessor timestamps)
+   (indicators :initarg :indicators :initform nil :accessor indicators)
+   (period-opens :initarg :period-opens :initform nil :accessor period-opens)
+   (period-lows :initarg :period-lows :initform nil :accessor period-lows)
+   (period-highs :initarg :period-highs :initform nil :accessor period-highs)
+   (period-closes :initarg :period-closes :initform nil :accessor period-closes)
+   (period-volumes :initarg :period-volumes :initform nil :accessor period-volumes)
+   (period-instant-data :initarg :period-instant-data :initform nil
+                        :accessor period-instant-data
+                        :documentation "lists of the form: (timestamp open high low close volume)"))
   (:documentation "This class holds the major data associated with a given tradable asset"))
 
 (defclass <ticker> (<ticker-base>)
   ((ticker :initarg :ticker
-           :initform (error "A stock ticker object must be initialised with a ticker ticker. eg. IBM or AAPL.")
+           :initform (error "A stock ticker object must be initialised with a ticker symbol. eg. IBM or AAPL.")
            :accessor ticker)
    (company :initarg :company
             :initform nil
