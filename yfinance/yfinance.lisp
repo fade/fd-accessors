@@ -199,65 +199,82 @@ Yahoo Finance API."))
   (declare (ignorable period interval start end))
   nil)
 
-;;========================================================================
-;; Methods for <ticker> info. Fill it in. Shake it out. Pass it around
-;;========================================================================
+;; ------------------------------------------------------------------------ 
 
+(defgeneric asset_profile (ticker api)
+  (:documentation "The assetProfile contains general information about the company,
+such as industy, full time employees, and its website and long business summary. This data
+should provide the 200 meter overview of a company."))
 
-;; (defgeneric get_data (ticker)
-;;   (:documentation "doc"))
+(defmethod asset_profile ((ticker <ticker>) (apisource <yahoo-finance-api>))
+  (call-next-method))
 
+;; ------------------------------------------------------------------------ 
 
 ;; (defgeneric get_analysts_info (ticker)
 ;;   (:documentation "Get available analyst info for ticker from "))
 
+;; ------------------------------------------------------------------------ 
 
 ;; (defgeneric get_balance_sheet (ticker)
 ;;   (:documentation "doc"))
 
+;; ------------------------------------------------------------------------ 
 
 ;; (defgeneric get_cash_flow (ticker)
 ;;   (:documentation "doc"))
 
+;; ------------------------------------------------------------------------ 
 
 ;; (defgeneric get_day_gainers (ticker)
 ;;   (:documentation "doc"))
 
+;; ------------------------------------------------------------------------ 
 
 ;; (defgeneric get_day_losers (ticker)
 ;;   (:documentation "doc"))
 
+;; ------------------------------------------------------------------------ 
 
 ;; (defgeneric get_day_most_active (ticker)
 ;;   (:documentation "doc"))
 
+;; ------------------------------------------------------------------------ 
 
 ;; (defgeneric get_holders (ticker)
 ;;   (:documentation "doc"))
 
+;; ------------------------------------------------------------------------ 
 
 ;; (defgeneric get_income_statement (ticker)
 ;;   (:documentation "doc"))
 
+;; ------------------------------------------------------------------------ 
 
 ;; (defgeneric get_live_price (ticker)
 ;;   (:documentation "doc"))
 
+;; ------------------------------------------------------------------------ 
 
 ;; (defgeneric get_quote_table (ticker)
 ;;   (:documentation "doc"))
 
+;; ------------------------------------------------------------------------ 
 
 ;; (defgeneric get_top_crypto (ticker)
 ;;   (:documentation "doc"))
 
+;; ------------------------------------------------------------------------ 
 
 ;; (defgeneric get_stats (ticker)
 ;;   (:documentation "doc"))
 
+;; ------------------------------------------------------------------------ 
 
 ;; (defgeneric get_stats_valuation (ticker)
 ;;   (:documentation "doc"))
+
+;; ------------------------------------------------------------------------ 
 
 ;; tickers_dow
 ;; tickers_nasdaq
