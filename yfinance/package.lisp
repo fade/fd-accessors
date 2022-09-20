@@ -2,6 +2,7 @@
 
 (defpackage #:yfinance
   (:use #:cl)
+  (:nicknames :yf)
   (:export
    #:<data-api>
    #:base-url
