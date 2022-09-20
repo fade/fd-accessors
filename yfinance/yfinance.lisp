@@ -76,6 +76,9 @@
 company representing a tradable asset. Specifically, the company
 represented by the market ticker symbol."))
 
+(defun make-ticker (symbol)
+  (make-instance '<ticker> :ticker symbol))
+
 (defclass <ticker-info> (<ticker> <yahoo-finance-api>)
   ((history :initarg :history :initform nil)
    )
@@ -101,55 +104,91 @@ represented by the market ticker symbol."))
              (indicators (cdr (second (third (first (nthcdr 3 result)))))))
         (values ticker-info data result timestamps indicators)))))
 
-(defun decode-ticker-jsown (ticker &key (api *api*))
-  "decode json returned from yahoo finance endpoint. return a ticker object."
+
+(defmethod initialize-instance :after ((tick <ticker>) &key)
+  "Turn the tiemstamps returned from yahoo finance into local-time timestamps which we can use for date-math."
+  (setf (first-trade-date tick) (local-time:unix-to-timestamp (first-trade-date tick))
+        (regular-market-time tick) (local-time:unix-to-timestamp (regular-market-time tick))
+        (current-trading-period tick) (make-instance 'trading-period
+                                                     :timezone (gethash "timezone" (current-trading-period tick))
+                                                     :start-of (local-time:unix-to-timestamp (gethash "start" (current-trading-period tick)))
+                                                     :end-of (local-time:unix-to-timestamp (gethash "end" (current-trading-period tick)))
+                                                     :gmtoffset (gethash "gmtoffset" (current-trading-period tick)))
+        (period-instant-data tick) (mapcar #'list (timestamps tick) (period-opens tick)
+                                           (period-highs tick) (period-lows tick) (period-closes tick)
+                                           (period-volumes tick))))
+
+(defun parse-ticker-as-hash (body)
+  "Given a JSON body, parse it with jonathan, returning a hash-table."
+  (jonathan:parse body :as :hash-table :junk-allowed t))
+
+(defun get-chart (ticker &optional start end)
+  (declare (ignorable start end))
   (let* ((tick (string-upcase ticker))
-         (url (format nil "~A/v8/finance/chart/~A" (base-url api) tick)))
+         (url (format nil "~A/v8/finance/chart/~A" (quri:render-uri (base-url *api*)) tick)))
+    (format t "~&~A~%" url)
+    (multiple-value-bind (body status response-headers uri stream)
+        (dex:get url)
+      (declare (ignorable body status response-headers uri stream))
+      (parse-ticker-as-hash body))))
+
+(defun decode-ticker (ticker &optional start end)
+  (declare (ignorable start end))
+  (let* ((tick (string-upcase ticker))  
+         (url (format nil "~A/v8/finance/chart/~A" (quri:render-uri (base-url *api*)) tick)))
 
     (multiple-value-bind (body status response-headers uri stream)
         (dex:get url)
       (declare (ignorable body status response-headers uri stream))
-      (format t "~&URL: ~A" url)
-      (let* ((raw-data body)
-             (data (jsown:parse raw-data))
-             (result (first (jsown:val (jsown:val data "chart") "result")))
-             (ticker-info (nthcdr 2 (first (nthcdr 1 result))))
-             (timestamps (nthcdr 1 (first (nthcdr 2 result))))
-             (indicators (cdr (second (third  (first (nthcdr 3 result))))))
-             (current-trading-period (first (nthcdr 14 result))))
-        (declare (ignorable indicators))
-        #|
-        TICKER-INFO
-        :currency :symbol :exchangeName :instrumentType :firstTradeDate :regularMarketTime
-        :gmtoffset :timezone :exhangeTimezoneName :regularMarketPrice :chartPreviousClose
-        :previousClose :scale :priceHint
-        :currentTradingPeriod ("pre" "regular" "start" "post")
-        :dataGranularity :validRanges
-        |#
-        #|
-        TIMESTAMPS
-        (list UNIXTIMESTAMPS)
-        |#
-        (make-instance '<ticker>
-                       :ticker (cdr (assoc "symbol" ticker-info :test #'equal))
-                       :pricing-currency (cdr (assoc "currency" ticker-info :test #'equal))
-                       :exchange-name (cdr (assoc "exchangeName" ticker-info :test #'equal))
-                       :instrument-type (cdr (assoc "instrumentType" ticker-info :test #'equal))
-                       :first-trade-date (cdr (assoc "firstTradeDate" ticker-info :test #'equal))
-                       :regular-market-time (cdr (assoc "regularMarketTime" ticker-info :test #'equal))
-                       :gmtoffset (cdr (assoc  "gmtoffset" ticker-info :test #'equal))
-                       :timezone (cdr (assoc  "timezone" ticker-info :test #'equal))
-                       :exchange-timezone-name (cdr (assoc  "exchangeTimezoneName" ticker-info :test #'equal))
-                       :current-trading-period current-trading-period
-                       :regular-market-price (cdr (assoc  "regularMarketPrice" ticker-info :test #'equal))
-                       :chart-previous-close (cdr (assoc  "chartPreviousClose" ticker-info :test #'equal))
-                       :previous-close (cdr (assoc  "previousClose" ticker-info :test #'equal))
-                       :scale (cdr (assoc  "scale" ticker-info :test #'equal))
-                       :price-hint (cdr (assoc  "priceHint" ticker-info :test #'equal))
-                       :timestamps (mapcar #'local-time:unix-to-timestamp timestamps))))))
+      (format t "~&[[~A]]" url)
 
-(defmethod initialize-instance :after ((ticker <ticker>) &rest initargs)
-  nil)
+      (let* ((data (parse-ticker-as-hash body))
+             (result (first (gethash "result" (gethash "chart" data))))
+             (ticker-info (gethash "meta" result)) 
+             (timestamps (gethash "timestamp" result)) ;; this is a list
+             (indicators (first (gethash "quote" (gethash "indicators" result))))
+             (current-trading-period (gethash "currentTradingPeriod" ticker-info))) ;; post / pre / regular
+
+        (values
+         (make-instance '<ticker>
+                        :ticker (gethash "symbol" ticker-info)
+                        :pricing-currency (gethash "currency" ticker-info)
+                        :exchange-name (gethash "exchangeName" ticker-info)
+                        :instrument-type (gethash "instrumentType" ticker-info)
+                        :first-trade-date (gethash "firstTradeDate" ticker-info)
+                        :regular-market-time (gethash "regularMarketTime" ticker-info)
+                        :gmtoffset (gethash "gmtoffset" ticker-info)
+                        :timezone (gethash "timezone" ticker-info)
+                        :valid-ranges (gethash "validRanges" ticker-info)
+                        :exchange-timezone-name (gethash "exchangeTimezoneName" ticker-info)
+                        :current-trading-period (gethash "regular" current-trading-period)
+                        :regular-market-price (gethash  "regularMarketPrice" ticker-info)
+                        :chart-previous-close (gethash "chartPreviousClose" ticker-info)
+                        :previous-close (gethash "previousClose" ticker-info)
+                        :scale (gethash "scale" ticker-info)
+                        :price-hint (gethash "priceHint" ticker-info)
+                        :timestamps (mapcar #'local-time:unix-to-timestamp timestamps)
+                        :indicators indicators
+                        :period-closes (gethash "close" indicators)
+                        :period-lows (gethash "low" indicators)
+                        :period-highs (gethash "high" indicators)
+                        :period-opens (gethash "open" indicators)
+                        :period-volumes (gethash "volume" indicators)))))))
+
+(defun get-arbitrary-thing (symbol thinglist)
+  (let* ((url (format nil (quri:render-uri (query-url *api*))
+                      (string-upcase symbol) thinglist)))
+    (multiple-value-bind (body status response-headers uri stream)
+        (dex:get url)
+      (declare (ignorable body status response-headers uri stream))
+      (format t "~&URL: ~A~%" url)
+      (let* ((data (jsown:parse body)))
+        (values data)))))
+
+
+;;========================================================================
+;; Methods for <ticker> info. Fill it in. Shake it out. Pass it around
+;;========================================================================
 
 (defgeneric write-history (ticker &key period interval start end &allow-other-keys)
   (:documentation "retrieve historical data for a given instance of <ticker> from the
