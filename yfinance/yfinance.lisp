@@ -6,10 +6,16 @@
 
 (defparameter *user-agent-header* "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/39.0.2171.95 Safari/537.36")
 
+(defclass trading-period ()
+  ((timezone :initarg :timezone :initform "GMT" :reader timezone)
+   (start-of :initarg :start-of :initform nil :accessor start-of)
+   (end-of  :initarg :end-of :initform nil :accessor end-of)
+   (gmtoffset :initarg :gmtoffset :initform 0 :accessor gmtoffset)))
+
 (defclass <data-api> ()
   ((base-url :initarg :base-url
              :accessor base-url
-             :initform (quri:uri "https://query2.finance.yahoo.com/")))
+             :initform (quri:uri "https://query1.finance.yahoo.com/")))
   (:documentation "This object represents the REST base-url with which
   our local protocol will interact."))
 
