@@ -8,10 +8,14 @@
   :serial t
   :depends-on (#:quri
                #:dexador
+               #:jonathan
+               #:jsown
                #:cl-strings
                #:cl-ppcre
                #:rutils
-               #:alexandria)
+               #:alexandria
+               #:chronicity
+               #:mito)
   
   :components ((:file "package")
                (:file "yfinance")))
